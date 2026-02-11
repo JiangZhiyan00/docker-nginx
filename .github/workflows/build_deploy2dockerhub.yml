@@ -39,9 +39,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get current date
-        id: current_date
-        run: echo "current_date=$(TZ=Asia/Shanghai date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Get Nginx version
+        run: |
+          NGINX_VERSION=$(grep -oP '(?<=FROM nginx:)\d+\.\d+\.\d+' stable/alpine/Dockerfile)
+          echo "NGINX_VERSION=$NGINX_VERSION" >> $GITHUB_ENV
+          echo "Nginx 版本: $NGINX_VERSION"
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -54,4 +56,4 @@ jobs:
             ENABLED_MODULES=${{ inputs.ENABLED_MODULES || 'brotli headers-more njs' }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/nginx:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.current_date }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/nginx:${{ env.NGINX_VERSION }}
