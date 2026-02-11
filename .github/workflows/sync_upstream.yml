@@ -23,6 +23,8 @@ jobs:
           AFTER=$(gh api repos/${{ github.repository }}/commits/master --jq '.sha')
           if [ "$BEFORE" != "$AFTER" ]; then
             echo "updated=true" >> $GITHUB_OUTPUT
+            echo "before=$BEFORE" >> $GITHUB_OUTPUT
+            echo "after=$AFTER" >> $GITHUB_OUTPUT
           else
             echo "已是最新，无需同步"
           fi
@@ -31,6 +33,14 @@ jobs:
 
       - name: Trigger build workflow
         if: steps.sync.outputs.updated == 'true'
-        run: gh workflow run build_deploy2dockerhub.yml
+        run: |
+          CHANGED=$(gh api repos/${{ github.repository }}/compare/${{ steps.sync.outputs.before }}...${{ steps.sync.outputs.after }} \
+            --jq '[.files[].filename | select(startswith("stable/alpine/") or . == "modules/Dockerfile.alpine")] | length')
+          if [ "$CHANGED" -gt 0 ]; then
+            echo "stable/alpine 或 modules/Dockerfile.alpine 有更新，触发构建"
+            gh workflow run build_deploy2dockerhub.yml
+          else
+            echo "无相关文件变化，跳过构建"
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
