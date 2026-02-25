@@ -15,21 +15,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
       - name: Sync from upstream
         id: sync
         run: |
-          BEFORE=$(gh api repos/${{ github.repository }}/commits/master --jq '.sha')
-          gh repo sync ${{ github.repository }} --branch master
-          AFTER=$(gh api repos/${{ github.repository }}/commits/master --jq '.sha')
+          git remote add upstream https://github.com/nginxinc/docker-nginx.git
+          git fetch upstream master
+          BEFORE=$(git rev-parse HEAD)
+          AFTER=$(git rev-parse upstream/master)
           if [ "$BEFORE" != "$AFTER" ]; then
+            git merge upstream/master --ff-only
+            git push origin master
             echo "updated=true" >> $GITHUB_OUTPUT
             echo "before=$BEFORE" >> $GITHUB_OUTPUT
             echo "after=$AFTER" >> $GITHUB_OUTPUT
           else
             echo "已是最新，无需同步"
           fi
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Trigger build workflow
         if: steps.sync.outputs.updated == 'true'
