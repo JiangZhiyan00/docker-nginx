@@ -30,7 +30,7 @@ jobs:
           BEFORE=$(git rev-parse HEAD)
           AFTER=$(git rev-parse upstream/master)
           if [ "$BEFORE" != "$AFTER" ]; then
-            git merge upstream/master --ff-only
+            git merge upstream/master --no-ff --no-edit
             git push origin master
             echo "updated=true" >> $GITHUB_OUTPUT
             echo "before=$BEFORE" >> $GITHUB_OUTPUT
