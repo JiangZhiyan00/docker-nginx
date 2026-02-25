@@ -29,7 +29,7 @@ jobs:
             echo "已是最新，无需同步"
           fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Trigger build workflow
         if: steps.sync.outputs.updated == 'true'
@@ -43,4 +43,4 @@ jobs:
             echo "无相关文件变化，跳过构建"
           fi
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
