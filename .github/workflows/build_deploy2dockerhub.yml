@@ -1,6 +1,8 @@
 name: Build and Deploy to Docker Hub
 
 on:
+  repository_dispatch:
+    types: [trigger-build]
   push:
     branches:
       - master

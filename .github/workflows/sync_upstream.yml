@@ -48,10 +48,14 @@ jobs:
             --jq '[.files[].filename | select(startswith("stable/alpine/") or . == "modules/Dockerfile.alpine")] | length')
           if [ "$CHANGED" -gt 0 ]; then
             echo "stable/alpine 或 modules/Dockerfile.alpine 有更新，触发构建"
-            gh workflow run build_deploy2dockerhub.yml --ref master
+            gh api repos/${{ github.repository }}/dispatches \
+            --method POST \
+            -f event_type=trigger-build
           else
             echo "无相关文件变化，跳过构建"
-            gh workflow run build_deploy2dockerhub.yml --ref master
+            gh api repos/${{ github.repository }}/dispatches \
+            --method POST \
+            -f event_type=trigger-build
           fi
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
