@@ -12,14 +12,14 @@ declare branches=(
 # Current nginx versions
 # Remember to update pkgosschecksum when changing this.
 declare -A nginx=(
-    [mainline]='1.29.8'
-    [stable]='1.30.0'
+    [mainline]='1.31.1'
+    [stable]='1.30.2'
 )
 
 # Current njs versions
 declare -A njs=(
-    [mainline]='0.9.6'
-    [stable]='0.9.6'
+    [mainline]='0.9.9'
+    [stable]='0.9.9'
 )
 
 # Current njs patchlevel version
@@ -37,8 +37,8 @@ declare -A otel=(
 
 # Current acme versions
 declare -A acme=(
-    [mainline]='0.3.1'
-    [stable]='0.3.1'
+    [mainline]='0.4.1'
+    [stable]='0.4.1'
 )
 
 # Current nginx package patchlevel version
@@ -68,18 +68,21 @@ declare -A alpine=(
 # When we bump njs version in a stable release we don't move the tag in the
 # pkg-oss repo.  This setting allows us to specify a revision to check out
 # when building packages on architectures not supported by nginx.org
+# When doing an nginx release, it's best to use tags:
+#     [mainline]='${NGINX_VERSION}-${PKG_RELEASE}'
+#     [stable]='${NGINX_VERSION}-${PKG_RELEASE}'
 # Remember to update pkgosschecksum when changing this.
 declare -A rev=(
-    [mainline]='${NGINX_VERSION}-${PKG_RELEASE}'
-    [stable]='${NGINX_VERSION}-${PKG_RELEASE}'
+    [mainline]='b151aac903a6fc121d57f0909415381d0a1c1bbd'
+    [stable]='60789259bfab36b1669a414881a9d002fd246d6b'
 )
 
 # Holds SHA512 checksum for the pkg-oss tarball produced by source code
 # revision/tag in the previous block
 # Used in builds for architectures not packaged by nginx.org
 declare -A pkgosschecksum=(
-    [mainline]='7074c3ba1ece708140afd0220b16df77651fbb56cc012e901bc1c4a80531872b7a58ad97a28357646575ce625e94a0540796c045f95d33e40e6d3874ce7b3d79'
-    [stable]='a090f4aecd628ab4b4124376efa55f617a272f9bae4e306df9b659b1b850133b0806cac31fb2a72faf1cc36bde8f5a19f4f5da5fd73502d3bbe374697920344e'
+    [mainline]='72c13cfedc25a6c1e01c24dd1f736b0fefd1ef7f73ef569e2726fc99c0137327d2e71c8694bd8b0157be2a7247ec1769904746a852e7698caf7df8a5b0040440'
+    [stable]='9282a0265c921af3e2d5760cbdc06aae65e6efb145ed266fe02102326174a9e9405f6492979372556c14e2f4f8cf66a48c338d054d0ece375a1c41f343f244cc'
 )
 
 get_packages() {
